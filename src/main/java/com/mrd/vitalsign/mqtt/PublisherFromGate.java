@@ -6,6 +6,7 @@
 package com.mrd.vitalsign.mqtt;
 
 import static com.mrd.vitalsign.mqtt.PublisherFromDisplay.displayTurnOn;
+import com.mrd.vitalsign.utils.NumberUtil;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -20,7 +21,9 @@ public class PublisherFromGate {
         //turnOnGate();
         //connectSensor();
         //disconnectSensor();
-        dataTemp();
+        //dataTemp();
+        //dataSpo2();
+        dataBp();
     }
 
     public static void turnOnGate() throws MqttException {
@@ -85,6 +88,57 @@ public class PublisherFromGate {
         MqttMessage message = new MqttMessage();
         message.setPayload(data.getBytes());
         client.publish("RES_TRANSMIT_DATA_TEMP_4eb2459ae05f004f", message);
+
+        System.out.println("\tMessage \n'" + data + "' '");
+        client.disconnect();
+        System.out.println("== END PUBLISHER ==");
+    }
+
+    public static void dataSpo2() throws MqttException {
+        String data = "{\n"
+                + "    \"gate_id\": \"GW-122mdmas\",\n"
+                + "    \"display_id\": \"DP123456\",\n"
+                + "    \"sensor_id\": \"SS123\",\n"
+                + "    \"measure_id\": \"asacdasdas\",\n"
+                + "    \"ts\":" + NumberUtil.generateDoubleFromRange(0, 10000) + ",\n"
+                + "    \"spo2\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                + "    \"pi\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                + "    \"pr\":" + NumberUtil.generateDoubleFromRange(0, 50) + ",\n"
+                + "    \"step\": " + NumberUtil.generateIntegerFromRange(0, 11150) + "\n"
+                + "}";
+        
+        System.out.println("== START dataSpo2 PUBLISHER ==");
+
+        MqttClient client = new MqttClient("tcp://103.21.151.182:1883", MqttClient.generateClientId());
+        client.connect();
+        MqttMessage message = new MqttMessage();
+        message.setPayload(data.getBytes());
+        client.publish("RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004f", message);
+
+        System.out.println("\tMessage \n'" + data + "' '");
+        client.disconnect();
+        System.out.println("== END PUBLISHER ==");
+    }
+
+    public static void dataBp() throws MqttException {
+        String data = "{\n"
+                + "    \"gate_id\": \"GW-122mdmas\",\n"
+                + "    \"display_id\": \"DP123456\",\n"
+                + "    \"sensor_id\": \"SS123\",\n"
+                + "    \"measure_id\": \"asacdasdas\",\n"
+                + "    \"ts\":" + NumberUtil.generateDoubleFromRange(0, 10000) + ",\n"
+                + "    \"dia\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                + "    \"sys\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                + "    \"map\":" + NumberUtil.generateIntegerFromRange(0, 100) + ",\n"
+                + "    \"pr\": " + NumberUtil.generateIntegerFromRange(0, 100) + "\n"
+                + "}";
+        System.out.println("== START dataBp PUBLISHER ==");
+
+        MqttClient client = new MqttClient("tcp://103.21.151.182:1883", MqttClient.generateClientId());
+        client.connect();
+        MqttMessage message = new MqttMessage();
+        message.setPayload(data.getBytes());
+        client.publish("RES_TRANSMIT_DATA_NIBP_4eb2459ae05f004f", message);
 
         System.out.println("\tMessage \n'" + data + "' '");
         client.disconnect();
