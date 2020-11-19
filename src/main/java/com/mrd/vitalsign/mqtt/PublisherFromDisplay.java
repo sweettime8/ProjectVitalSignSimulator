@@ -16,15 +16,16 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class PublisherFromDisplay {
 
     public static void main(String[] args) throws MqttException {
-        displayTurnOn();
-        //displayUnLink();
-        //displayAddLink();
-        //displayGetPatient();
+       // displaySearchGate();
+       //displayTurnOn();
+       // displayUnLink();
+       //  displayAddLink();
+         displayGetPatient();
 
     }
 
     public static void displayUnLink() throws MqttException {
-        String data = "{\"display_id\":\"4eb2459ae05f004f\",\"gate_id\":\"00bade93cdd4bd19\"}";
+        String data = "{\"display_id\":\"4eb2459ae05f004c\",\"gate_id\":\"ELCGW-001-00000000649af267\"}";
 
         System.out.println("== START displayUnLink PUBLISHER ==");
 
@@ -32,7 +33,7 @@ public class PublisherFromDisplay {
         client.connect();
         MqttMessage message = new MqttMessage();
         message.setPayload(data.getBytes());
-        client.publish("DISPLAY_UNLINK_GATE_REQ_4eb2459ae05f004f", message);
+        client.publish("DISPLAY/UNLINK/GATE/REQ/4eb2459ae05f004f", message);
 
         System.out.println("\tMessage \n'" + data + "' '");
         client.disconnect();
@@ -40,7 +41,7 @@ public class PublisherFromDisplay {
     }
 
     public static void displayAddLink() throws MqttException {
-        String data = "{\"display_id\":\"4eb2459ae05f004f\",\"gate_id\":\"00bade93cdd4bd19\"}";
+        String data = "{\"display_id\":\"4eb2459ae05f004c\",\"gate_id\":\"ELCGW-001-00000000649af267\"}";
 
         System.out.println("== START displayAddLink PUBLISHER ==");
 
@@ -48,7 +49,7 @@ public class PublisherFromDisplay {
         client.connect();
         MqttMessage message = new MqttMessage();
         message.setPayload(data.getBytes());
-        client.publish("DISPLAY_LINK_GATE_REQ_4eb2459ae05f004f", message);
+        client.publish("DISPLAY/LINK/GATE/REQ/4eb2459ae05f004c", message);
 
         System.out.println("\tMessage \n'" + data + "' '");
         client.disconnect();
@@ -64,7 +65,29 @@ public class PublisherFromDisplay {
         client.connect();
         MqttMessage message = new MqttMessage();
         message.setPayload(data.getBytes());
-        client.publish("DISPLAY_REQ_GATE_SENSOR_4eb2459ae05f004c", message);
+        client.publish("DISPLAY/REQ/GATE/SENSOR/4eb2459ae05f004c", message);
+
+        System.out.println("\tMessage \n'" + data + "' '");
+
+        client.disconnect();
+
+        System.out.println("== END PUBLISHER ==");
+
+    }
+
+    public static void displaySearchGate() throws MqttException {
+
+        String data = "{\n"
+                + "       \"display_id\" : \"4eb2459ae05f004c\",\n"
+                + "       \"gate_id\" : \"ELCGW-001-000000006bcbd964\"\n"
+                + "}";
+        System.out.println("== START PUBLISHER ==");
+
+        MqttClient client = new MqttClient("tcp://103.21.151.182:1883", MqttClient.generateClientId());
+        client.connect();
+        MqttMessage message = new MqttMessage();
+        message.setPayload(data.getBytes());
+        client.publish("DISPLAY/SERVER/SEARCH_GATE_REQ/4eb2459ae05f004c", message);
 
         System.out.println("\tMessage \n'" + data + "' '");
 
@@ -88,7 +111,7 @@ public class PublisherFromDisplay {
         client.connect();
         MqttMessage message = new MqttMessage();
         message.setPayload(data.getBytes());
-        client.publish("GET_PATIENT_LIST_4eb2459ae05f004c", message);
+        client.publish("GET/PATIENT/LIST/4eb2459ae05f004c", message);
 
         System.out.println("\tMessage \n'" + data + "' '");
 

@@ -19,42 +19,85 @@ import org.eclipse.paho.client.mqttv3.MqttTopic;
  */
 public class PublisherSpo2 implements Runnable {
 
-    private String gateId;
-    private String sensorId;
     private static final int QOS = 1;
     private static final String MQTT_URL = "tcp://103.21.151.182:1883";
 
-    public static void main(String[] args) {
-        new Thread(new PublisherTemp()).start();
-    }
+//    public static void main(String[] args) {
+//        new Thread(new PublisherTemp()).start();
+//    }
+    private static void send(MqttClient mqttClient22212) throws MqttException, IOException, InterruptedException {
 
-    private static void send(MqttClient mqttClient) throws MqttException, IOException, InterruptedException {
-        MqttTopic topic = mqttClient.getTopic("RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004f");
+        MqttClient mqttClient = new MqttClient(MQTT_URL, MqttClient.generateClientId());
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        connOpts.setCleanSession(false);
+        connOpts.setAutomaticReconnect(true);
+        connOpts.setConnectionTimeout(10);
+        connOpts.setKeepAliveInterval(1800);
+        mqttClient.connect(connOpts);
+
+        MqttTopic topic = mqttClient.getTopic("RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004c");
         MqttMessage message;
         String data;
         while (!Thread.currentThread().isInterrupted()) {
-            data = "{\n"
-                    + "    \"gate_id\": \"GW-122mdmas\",\n"
-                    + "    \"display_id\": \"DP123456\",\n"
-                    + "    \"sensor_id\": \"SS123\",\n"
-                    + "    \"measure_id\": \"asacdasdas\",\n"
-                    + "    \"ts\":" + NumberUtil.generateDoubleFromRange(0, 10000) + ",\n"
-                    + "    \"spo2\":" + NumberUtil.generateDoubleFromRange(0, 50) + ",\n"
-                    + "    \"pi\":" + NumberUtil.generateDoubleFromRange(0, 50) + ",\n"
-                    + "    \"pr\":" + NumberUtil.generateDoubleFromRange(0, 50) + ",\n"
-                    + "    \"step\": " + NumberUtil.generateDoubleFromRange(0, 11150) + "\n"
-                    + "}";
+            try {
+                data = "{\n"
+                        + "    \"gate_id\": \"ELCGW-001-00000000649af267\",\n"
+                        + "    \"display_id\": \"4eb2459ae05f004c\",\n"
+                        + "    \"sensor_id\": \"bcbf91bd-c648-46fd-8bac-a0ee0b71d33n\",\n"
+                        + "    \"measure_id\": \"asacdasdas\",\n"
+                        + "    \"ts\":" + System.currentTimeMillis() / 1000 + ",\n"
+                        + "    \"spo2\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"pi\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"pr\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"step\": " + NumberUtil.generateIntegerFromRange(0, 11150) + "\n"
+                        + "}";
 
-            message = new MqttMessage(data.getBytes());
-            message.setQos(QOS);
-            message.setRetained(false);
-            topic.publish(message);
-            System.out.println("Publish data to [RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004f] success!");
+                message = new MqttMessage(data.getBytes());
+                message.setQos(QOS);
+                message.setRetained(false);
+                topic.publish(message);
+            } catch (Exception ex) {
+                System.out.println(ex.toString());
+            }
+            System.out.println("Publish data to [RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004c] success!");
 
-            Thread.sleep(1000);
+            Thread.sleep(100);
         }
     }
 
+    private static void sendNew(MqttClient mqttClient) throws MqttException, IOException, InterruptedException {
+
+
+        MqttTopic topic = mqttClient.getTopic("RES/TRANSMIT/DATA/SPO2/4eb2459ae05f004c");
+        MqttMessage message;
+        String data;
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                data = "{\n"
+                        + "    \"gate_id\": \"ELCGW-001-00000000649af267\",\n"
+                        + "    \"display_id\": \"4eb2459ae05f004c\",\n"
+                        + "    \"sensor_id\": \"bcbf91bd-c648-46fd-8bac-a0ee0b71d33n\",\n"
+                        + "    \"measure_id\": \"asacdasdas\",\n"
+                        + "    \"ts\":" + System.currentTimeMillis() / 1000 + ",\n"
+                        + "    \"spo2\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"pi\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"pr\":" + NumberUtil.generateIntegerFromRange(0, 50) + ",\n"
+                        + "    \"step\": " + NumberUtil.generateIntegerFromRange(0, 11150) + "\n"
+                        + "}";
+
+                message = new MqttMessage(data.getBytes());
+                message.setQos(QOS);
+                message.setRetained(false);
+                topic.publish(message);
+            } catch (Exception ex) {
+                System.out.println(ex.toString());
+            }
+            System.out.println("Publish data to [RES_TRANSMIT_DATA_SPO2_4eb2459ae05f004c] success!");
+
+            Thread.sleep(300);
+        }
+    }
+    
     @Override
     public void run() {
         try {
@@ -67,7 +110,8 @@ public class PublisherSpo2 implements Runnable {
             mqttClient.connect(connOpts);
 
             try {
-                send(mqttClient);
+                //send(mqttClient);
+                sendNew(mqttClient);
             } catch (Exception ex) {
             }
 
